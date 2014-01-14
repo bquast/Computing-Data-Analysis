@@ -5,9 +5,6 @@
 
 # PART 3
 
-temp = list.files(pattern="*.csv")
-myfiles = lapply(temp, read.delim)
-
 corr <- function(directory, threshold = 0) {
   ## 'directory' is a character vector of length 1 indicating
   ## the location of the CSV files
@@ -19,43 +16,23 @@ corr <- function(directory, threshold = 0) {
   
   ## Return a numeric vector of correlations
 
-
-}
-
-complete <- function(directory, id) {
-  ## 'directory' is a character vector of length 1 indicating
-  ## the location of the CSV files
+  filter.data <- list()
+  output <- vector()
   
-  ## 'id' is an integer vector indicating the monitor ID numbers
-  ## to be used
+  j <- 1
   
-  ## Return a data frame of the form:
-  ## id nobs
-  ## 1  117
-  ## 2  1041
-  ## ...
-  ## where 'id' is the monitor ID number and 'nobs' is the
-  ## number of complete cases
+  temp <- list.files(path = directory, pattern="*.csv")
+  temp <- paste(directory, temp, sep="/")
+  import.data <- lapply(temp, read.csv)
   
-  c.id <- as.integer(id)
+  import.data.seq = 1:length(import.data)
   
-  # convert to string of length 3
-  
-  
-  obj <- data.frame(id=0, nobs=0)
-  j <- 1  
-  for (i in c.id) {
-    # define string id
-    s.id <- sprintf("%03i",i)
-    # define path
-    path <- paste(directory, "/", s.id, ".csv", sep="")
-    
-    # read data
-    temp.data <- read.csv(path)
-    
-    obj[[j,"id"]] <- i
-    obj[[j,"nobs"]] <- sum(complete.cases(temp.data))
-    j <- j + 1
+  for(i in import.data.seq){
+    if (sum(complete.cases(import.data[[i]])) > threshold){
+      output[[j]] <- cor(import.data[[i]]$nitrate, import.data[[i]]$sulfate, use="pairwise.complete.obs")
+      j <- j + 1
+    }
   }
-  obj
+  
+  output
 }
