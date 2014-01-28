@@ -42,7 +42,6 @@ rankhospital <- function(state, outcome, num = "best") {
   } else if (typeof(as.integer(num)) == "integer") {
     num <- as.integer(num)
     sort.data <- sub.data[ order(sub.data[, outcome.col], xtfrm(sub.data[, 3])), ]
-    # results <- head(sort.data$Hospital.Name, num)
     results <- sort.data[num, 2]
     } else {
     stop('invalid rank')
